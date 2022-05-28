@@ -3,14 +3,14 @@
     {
       "id": 1,
       "name": "Admin User",
-      "email": "a",
+      "username": "a",
       "password": "a",
       "role": "admin"
     },
     {
       "id": 2,
       "name": "Regular User",
-      "email": "u",
+      "username": "u",
       "password": "u",
       "role": "user"
     }
