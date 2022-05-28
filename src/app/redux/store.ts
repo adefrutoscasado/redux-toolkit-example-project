@@ -5,7 +5,7 @@ import userReducer from './reducers/userReducer'
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    userAccessData: userReducer,
+    session: userReducer,
   },
 })
 

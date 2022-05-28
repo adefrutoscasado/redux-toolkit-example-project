@@ -25,7 +25,7 @@ const { reducer, actions } = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUserAccessDataAction: (state, action) => {
+    setSessionAction: (state, action) => {
       state.data = action.payload
       state.isFetching = true
       state.error = null
@@ -62,7 +62,7 @@ const { reducer, actions } = createSlice({
 
 export const {
   logoutAction,
-  setUserAccessDataAction,
+  setSessionAction,
 } = actions
 
 export default reducer
