@@ -9,18 +9,17 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 export const useUserReducer = () => {
   const dispatch = useAppDispatch()
-  // @ts-ignore: TODO: Change userAccessData to session
   const {
     error: loginError,
     isFetching: isLoggingIn,
-    data: userAccessData,
-  } = useAppSelector(state => state?.userAccessData) || {}
+    data: session,
+  } = useAppSelector(state => state?.session) || {}
 
   const {
     access_token,
     refresh_token,
     user,
-  } = userAccessData || {} as any
+  } = session || {} as any
 
   const isLogged = !!access_token
 

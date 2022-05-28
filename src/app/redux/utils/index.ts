@@ -1,7 +1,7 @@
 import * as ROUTES from './../api/routes'
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query'
-import { logoutAction, setUserAccessDataAction } from './../reducers/userReducer'
+import { logoutAction, setSessionAction } from './../reducers/userReducer'
 import { Mutex } from 'async-mutex'
 // create a new mutex
 const mutex = new Mutex()
@@ -10,7 +10,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: ROUTES.API_HOST,
   prepareHeaders: (headers, { getState }) => {
     // @ts-ignore
-    const accessToken = getState().userAccessData?.access_token
+    const accessToken = getState().session?.access_token
     if (accessToken) {
       headers.set('Authorization', `Bearer ${accessToken}`)
     }
@@ -37,11 +37,11 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
           url: ROUTES.REFRESH(),
           method: 'POST',
           // @ts-ignore
-          body: { refresh_token: api.getState().userAccessData?.refresh_token }
+          body: { refresh_token: api.getState().session?.refresh_token }
         }, api, extraOptions)
 
         if (refreshResult.data) {
-          api.dispatch(setUserAccessDataAction(refreshResult.data))
+          api.dispatch(setSessionAction(refreshResult.data))
           // retry the initial query
           result = await baseQuery(args, api, extraOptions)
         } else {
