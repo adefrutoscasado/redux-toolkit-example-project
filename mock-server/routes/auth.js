@@ -9,18 +9,18 @@ const server = express()
 const usersDb = JSON.parse(fs.readFileSync('mock-server/users.json', 'UTF-8'))
 
 // Check if the user exists in database
-function findUserByCredentials({ email, password }) {
-  return usersDb.users.find(user => user.email === email && user.password === password)
+function findUserByCredentials({ username, password }) {
+  return usersDb.users.find(user => user.username === username && user.password === password)
 }
 
 server.post('/login', asyncWrap((req, res) => {
-  const { email, password } = req.body
+  const { username, password } = req.body
 
-  if (!findUserByCredentials({ email, password })) {
-    throw new UnauthorizedError('Incorrect email or password')
+  if (!findUserByCredentials({ username, password })) {
+    throw new UnauthorizedError('Incorrect username or password')
   }
 
-  const payload = {...findUserByCredentials({ email, password })}
+  const payload = {...findUserByCredentials({ username, password })}
   delete payload['password']
 
   res.status(200).json({
