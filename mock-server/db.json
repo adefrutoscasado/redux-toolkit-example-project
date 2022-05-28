@@ -1,0 +1,14 @@
+{
+  "posts": [
+    {
+      "name": "name 1",
+      "description": "description 1",
+      "id": 1
+    },
+    {
+      "name": "name 2",
+      "description": "description 2",
+      "id": 2
+    }
+  ]
+}
