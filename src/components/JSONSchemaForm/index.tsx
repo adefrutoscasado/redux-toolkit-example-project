@@ -1,5 +1,7 @@
-import JSONSchemaForm from "@rjsf/core"
-import React, { useState } from "react"
+import JSONSchemaForm from '@rjsf/core'
+import cn from 'classnames'
+import React, { useState } from 'react'
+import { Button, Spinner, Alert } from './../../components/bootstrap'
 
 export const flatten = (obj, keySeparator = '.') => {
   const flattenRecursive = (obj, parentProperty, propertyMap = {}) => {
@@ -41,11 +43,25 @@ const addDefaultValues = (jsonSchemaProperties, defaultValues) => {
   return jsonSchemaPropertiesClone
 }
 
+const SubmitButton = ({ isFetching, label }) => (
+  <span
+    className={cn(
+      'form-submit-button',
+      isFetching && 'is-fetching'
+    )}
+  >
+    {label}
+  </span>
+)
+
 const JSONSchemaForm_ = ({
   onSubmit = f => f,
   schema = {} as any,
   defaultValues = {},
   title = '' as string,
+  isFetching = false,
+  label = 'Submit',
+  error = null as any,
   ...props
 }) => {
   const [ currentValues, setCurrentValues ] = useState()
@@ -71,7 +87,34 @@ const JSONSchemaForm_ = ({
       onSubmit={_onSubmit}
       schema={processedSchema}
       {...props}
-    />
+    >
+      <Button
+        type="submit"
+        variant={'primary'}
+        disabled={isFetching}
+      >
+        {isFetching && (
+          <>
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            />
+            <SubmitButton {...{ isFetching, label }} />
+          </>
+        )}
+        {!isFetching && (
+          <SubmitButton {...{ isFetching, label }} />
+        )}
+      </Button>
+      {(error && !isFetching) &&
+        <Alert variant={'danger'}>
+          {JSON.stringify(error)}
+        </Alert>
+      }
+    </JSONSchemaForm>
   )
 }
 
