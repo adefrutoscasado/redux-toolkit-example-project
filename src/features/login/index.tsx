@@ -1,8 +1,7 @@
-import JSONSchemaForm from "@rjsf/core"
 import { useUserReducer } from "../../app/hooks"
+import JSONSchemaForm from "../../components/JSONSchemaForm"
 
 const loginJsonSchema = {
-  'title': 'Login',
   'type': 'object',
   'properties': {
     'username': {
@@ -20,12 +19,8 @@ const loginJsonSchema = {
 export default function Form() {
   const { login } = useUserReducer()
 
-  const onSubmit = ({formData}) => {
-    login(formData)
-  }
-
   return (
     // @ts-ignore
-    <JSONSchemaForm onSubmit={onSubmit} schema={loginJsonSchema} />
+    <JSONSchemaForm title={'Login'} onSubmit={login} schema={loginJsonSchema} />
   )
 }
