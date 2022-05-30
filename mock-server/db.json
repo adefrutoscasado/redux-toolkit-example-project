@@ -9,21 +9,6 @@
       "name": "name 2",
       "description": "description 2",
       "id": 2
-    },
-    {
-      "name": "name",
-      "description": "description",
-      "id": 3
-    },
-    {
-      "name": "name",
-      "description": "description",
-      "id": 4
-    },
-    {
-      "name": "name",
-      "description": "description",
-      "id": 5
     }
   ]
 }
