@@ -59,6 +59,15 @@ const postsApiSlice = api.injectEndpoints({
       // @ts-ignore
       invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }], // invalidate single id
     }),
+    deletePost: builder.mutation<Post, Partial<Post> & Pick<Post, 'id'>>({
+      query: (body) => ({
+        url: `${ROUTES.POSTS()}${body.id}`,
+        method: 'DELETE',
+        body,
+      }),
+      // @ts-ignore
+      invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }], // invalidate single id
+    }),
     // TODO: Create an optimistic update https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
   }),
 })
@@ -68,6 +77,7 @@ export const {
   useGetPostQuery,
   usePostPostMutation,
   useUpdatePostMutation,
+  useDeletePostMutation,
 } = postsApiSlice
 
 // @ts-ignore

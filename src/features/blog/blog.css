@@ -44,3 +44,9 @@
 .form-group.field > label {
   margin-bottom: 0px;
 }
+
+.card-title-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

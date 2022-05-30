@@ -5,6 +5,7 @@ import {
   useGetPostQuery,
   usePostPostMutation,
   useUpdatePostMutation,
+  useDeletePostMutation,
   selectPostsIds,
   selectPostsEntities,
   selectAllPosts,
@@ -15,7 +16,7 @@ import {
   useAppSelector,
 } from './../../app/hooks'
 import JSONSchemaForm from './../../components/JSONSchemaForm'
-import { Spinner, Alert, Card } from './../../components/bootstrap'
+import { Spinner, Alert, Card, Button } from './../../components/bootstrap'
 
 
 const postPostJsonSchema = {
@@ -117,10 +118,31 @@ const SinglePost = ({
   const { isFetching, error: getPostError } = useGetPostQuery(id)
   const post = useAppSelector(selectPostById(id))
   const [ updatePost, { isLoading: isUpdatingPost, error: updatingPostError } ] = useUpdatePostMutation()
+  const [ deletePost, { isLoading: isDeletingPost, error: deletingPostError } ] = useDeletePostMutation()
 
   return (
     <Card>
-      <Card.Title>{title || `Post with id: ${id}`}</Card.Title>
+      <Card.Title>
+        <div className='card-title-container'>
+          <div>
+            {title || `Post with id: ${id}`}
+          </div>
+          <div>
+            <Button variant='danger' title='Delete' onClick={() => deletePost({id})}>
+              {
+                isDeletingPost ?
+                  <Spinner
+                    animation='border'
+                    variant='white'
+                    size='sm'
+                  />
+                  :
+                  'x'
+              }
+            </Button>
+          </div>
+        </div>
+      </Card.Title>
       <Layout
         data={post}
         isFetching={isFetching}
@@ -133,7 +155,7 @@ const SinglePost = ({
         schema={updatePostJsonSchema}
         defaultValues={post}
         isFetching={isUpdatingPost}
-        error={updatingPostError}
+        error={updatingPostError || deletingPostError}
       />
     </Card>
   )
