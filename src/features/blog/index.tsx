@@ -88,7 +88,7 @@ const AllPosts = () => {
   const { isFetching, error: getPostsError } = useGetPostsQuery()
   const allPosts = useAppSelector(selectAllPosts)
   const total = useAppSelector(selectPostsTotal)
-  const [ postPost, { isLoading: isPostingPost, isError: isErrorPost } ] = usePostPostMutation()
+  const [ postPost, { isLoading: isPostingPost, error: postingPostError } ] = usePostPostMutation()
 
   return (
     <Card className='all-posts'>
@@ -103,6 +103,8 @@ const AllPosts = () => {
         title={'Create post'}
         onSubmit={postPost}
         schema={postPostJsonSchema}
+        isFetching={isPostingPost}
+        error={postingPostError}
       />
     </Card>
   )
@@ -114,7 +116,7 @@ const SinglePost = ({
 }) => {
   const { isFetching, error: getPostError } = useGetPostQuery(id)
   const post = useAppSelector(selectPostById(id))
-  const [ updatePost, { isLoading: isUpdatingPost, isError: isErrorPost } ] = useUpdatePostMutation()
+  const [ updatePost, { isLoading: isUpdatingPost, error: updatingPostError } ] = useUpdatePostMutation()
 
   return (
     <Card>
@@ -130,6 +132,8 @@ const SinglePost = ({
         onSubmit={updatePost}
         schema={updatePostJsonSchema}
         defaultValues={post}
+        isFetching={isUpdatingPost}
+        error={updatingPostError}
       />
     </Card>
   )
