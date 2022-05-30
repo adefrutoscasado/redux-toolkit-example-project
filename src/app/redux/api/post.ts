@@ -18,7 +18,6 @@ const initialState = adapter.getInitialState()
 
 export const POST_TAG = 'Post'
 
-
 const postsApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query<EntityState<Post>, void>({
@@ -37,6 +36,7 @@ const postsApiSlice = api.injectEndpoints({
     }),
     getPost: builder.query<Post, number>({
       query: (id) => `${ROUTES.POSTS()}${id}`,
+      // @ts-ignore
       providesTags: (result, error, id) => {
         return [{ type: POST_TAG, id }]
       },
@@ -47,7 +47,7 @@ const postsApiSlice = api.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: [POST_TAG],
+      invalidatesTags: ['POST'],
     }),
     updatePost: builder.mutation<Post, Partial<Post> & Pick<Post, 'id'>>({
       query: (body) => ({
@@ -55,6 +55,7 @@ const postsApiSlice = api.injectEndpoints({
         method: 'PATCH',
         body,
       }),
+      // @ts-ignore
       invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }],
     }),
   }),
