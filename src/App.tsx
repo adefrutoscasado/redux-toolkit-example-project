@@ -14,6 +14,7 @@ import * as ROUTES from './routes'
 
 const Main = () => {
   const { logout } = useUserReducer()
+
   return (
     <>
       <Link to={ROUTES.COUNTER}>Counter</Link>

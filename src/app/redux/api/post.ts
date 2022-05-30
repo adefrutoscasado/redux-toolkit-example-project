@@ -30,7 +30,7 @@ const postsApiSlice = api.injectEndpoints({
         const tags = result && (Object.keys(result?.entities || [])) ?
           Object.values(result.ids).map((id) => ({ type: POST_TAG, id }))
           :
-          [{ type: POST_TAG, id: 'LIST' }]
+          [{ type: POST_TAG, id: 'LIST' }] // provide various ids. If no id, use the tag 'list'
         return tags
       }
     }),
@@ -38,7 +38,7 @@ const postsApiSlice = api.injectEndpoints({
       query: (id) => `${ROUTES.POSTS()}${id}`,
       // @ts-ignore
       providesTags: (result, error, id) => {
-        return [{ type: POST_TAG, id }]
+        return [{ type: POST_TAG, id }] // provide single id
       },
     }),
     postPost: builder.mutation({
@@ -47,7 +47,8 @@ const postsApiSlice = api.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['POST'],
+      // @ts-ignore
+      invalidatesTags: [POST_TAG], // invalidate entire list
     }),
     updatePost: builder.mutation<Post, Partial<Post> & Pick<Post, 'id'>>({
       query: (body) => ({
@@ -56,7 +57,7 @@ const postsApiSlice = api.injectEndpoints({
         body,
       }),
       // @ts-ignore
-      invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }], // invalidate single id
     }),
   }),
 })
@@ -81,9 +82,11 @@ export const {
   selectEntities: selectPostsEntities,
   selectAll: selectAllPosts,
   selectTotal: selectPostsTotal,
-  selectById: selectPostById,
+  selectById: selectPostById_,
   //  @ts-ignore
 } = adapter.getSelectors(state => selectPostsResultData(state) ?? initialState)
 
+// helper to use 'selectById' cleaner
+export const selectPostById = (id: Post['id']) => (state) => selectPostById_(state, id)
 
 export default postsApiSlice

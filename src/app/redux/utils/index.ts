@@ -10,7 +10,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: ROUTES.API_HOST,
   prepareHeaders: (headers, { getState }) => {
     // @ts-ignore
-    const accessToken = getState().session?.access_token
+    const accessToken = getState().session?.data?.access_token
     if (accessToken) {
       headers.set('Authorization', `Bearer ${accessToken}`)
     }
@@ -37,7 +37,7 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
           url: ROUTES.REFRESH(),
           method: 'POST',
           // @ts-ignore
-          body: { refresh_token: api.getState().session?.refresh_token }
+          body: { refresh_token: api.getState().session?.data?.refresh_token }
         }, api, extraOptions)
 
         if (refreshResult.data) {
