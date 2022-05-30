@@ -59,6 +59,35 @@ const postsApiSlice = api.injectEndpoints({
       // @ts-ignore
       invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }], // invalidate single id
     }),
+    updatePostWithOptimism: builder.mutation<void, Pick<Post, 'id'> & Partial<Post>>({
+      query: ({ id, ...patch }) => ({
+        url: `${ROUTES.POSTS()}${id}`,
+        method: 'PATCH',
+        patch,
+      }),
+      async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          // IMPORTANT: This will manually use the dispatch of updateQueryData of 'getPost',
+          // but 'getPosts' wont be updated
+          // @ts-ignore
+          api.util.updateQueryData('getPost', id, (draft) => {
+            console.log()
+            Object.assign(draft, patch)
+          })
+        )
+        try {
+          await queryFulfilled
+        } catch {
+          patchResult.undo()
+
+          /**
+           * Alternatively, on failure you can invalidate the corresponding cache tags
+           * to trigger a re-fetch:
+           * dispatch(api.util.invalidateTags(['Post']))
+           */
+        }
+      },
+    }),
     deletePost: builder.mutation<Post, Partial<Post> & Pick<Post, 'id'>>({
       query: (body) => ({
         url: `${ROUTES.POSTS()}${body.id}`,
@@ -78,6 +107,7 @@ export const {
   usePostPostMutation,
   useUpdatePostMutation,
   useDeletePostMutation,
+  useUpdatePostWithOptimismMutation,
 } = postsApiSlice
 
 // @ts-ignore

@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './blog.css'
 import {
   useGetPostsQuery,
   useGetPostQuery,
   usePostPostMutation,
   useUpdatePostMutation,
+  useUpdatePostWithOptimismMutation,
   useDeletePostMutation,
   selectPostsIds,
   selectPostsEntities,
@@ -16,7 +17,7 @@ import {
   useAppSelector,
 } from './../../app/hooks'
 import JSONSchemaForm from './../../components/JSONSchemaForm'
-import { Spinner, Alert, Card, Button } from './../../components/bootstrap'
+import { Spinner, Alert, Card, Button, FormCheck } from './../../components/bootstrap'
 
 
 const postPostJsonSchema = {
@@ -115,10 +116,17 @@ const SinglePost = ({
   id,
   title = '',
 }) => {
-  const { isFetching, error: getPostError } = useGetPostQuery(id)
+
+  const [ optimism, setOptimism ] = useState(false)
+  const { data, isFetching, error: getPostError } = useGetPostQuery(id)
   const post = useAppSelector(selectPostById(id))
   const [ updatePost, { isLoading: isUpdatingPost, error: updatingPostError } ] = useUpdatePostMutation()
+  const [ updatePostWithOptimism, { isLoading: isUpdatingPostWithOptimism, error: updatingWithOptimismPostError } ] = useUpdatePostWithOptimismMutation()
   const [ deletePost, { isLoading: isDeletingPost, error: deletingPostError } ] = useDeletePostMutation()
+
+  const updatePost_ = optimism ? updatePostWithOptimism : updatePost
+  const isUpdatingPost_ = optimism ? isUpdatingPostWithOptimism : isUpdatingPost
+  const updatingPostError_ = optimism ? updatingWithOptimismPostError : updatingPostError
 
   return (
     <Card>
@@ -144,18 +152,25 @@ const SinglePost = ({
         </div>
       </Card.Title>
       <Layout
-        data={post}
+        data={data}
         isFetching={isFetching}
         error={getPostError}
       />
       {/* @ts-ignore */}
       <JSONSchemaForm
         title={'Update post'}
-        onSubmit={updatePost}
+        onSubmit={updatePost_}
         schema={updatePostJsonSchema}
         defaultValues={post}
-        isFetching={isUpdatingPost}
-        error={updatingPostError || deletingPostError}
+        isFetching={isUpdatingPost_}
+        error={updatingPostError_ || deletingPostError}
+      />
+      <FormCheck
+          type='switch'
+          id={id}
+          label='Update with optimism :)'
+          checked={optimism}
+          onChange={ev => setOptimism(ev.target.checked)}
       />
     </Card>
   )
