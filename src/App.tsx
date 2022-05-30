@@ -13,13 +13,15 @@ import { useUserReducer } from './app/hooks'
 import * as ROUTES from './routes'
 
 const Main = () => {
+  const { logout } = useUserReducer()
   return (
     <>
       <Link to={ROUTES.COUNTER}>Counter</Link>
       <Link to={ROUTES.BLOG}>Blog</Link>
+      <Link onClick={logout}>Logout</Link>
       <Switch>
         <>
-          <Redirect from={'*'} to={ROUTES.COUNTER} />
+          <Redirect from={'*'} to={ROUTES.BLOG} />
           <Route path={ROUTES.COUNTER}>
             <Counter />
           </Route>
@@ -40,8 +42,8 @@ const App = () => {
       {!isLoggedIn &&
         <Switch>
           <>
-            <Redirect from={'*'} to={'/login'} />
-            <Route path={'/login'}>
+            <Redirect from={'*'} to={ROUTES.LOGIN} />
+            <Route path={ROUTES.LOGIN}>
               <Login />
             </Route>
           </>
