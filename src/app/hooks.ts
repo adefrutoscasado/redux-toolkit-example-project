@@ -21,7 +21,7 @@ export const useUserReducer = () => {
     user,
   } = session || {} as any
 
-  const isLogged = !!access_token
+  const isLoggedIn = !!session
 
   const logout = () => dispatch(logoutAction())
   // @ts-ignore
@@ -40,7 +40,7 @@ export const useUserReducer = () => {
     user,
     isAdmin,
     isUser,
-    isLogged,
+    isLoggedIn,
     defaultRoute,
     loginError,
     isLoggingIn,
