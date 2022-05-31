@@ -51,7 +51,7 @@ const updatePostJsonSchema = {
       'default': 'description',
     },
   },
-  'required': ['name', 'description'],
+  'required': ['id', 'name', 'description'],
 }
 
 
@@ -129,7 +129,9 @@ const SinglePost = ({
   const updatingPostError_ = optimism ? updatingWithOptimismPostError : updatingPostError
 
   return (
-    <Card>
+    <Card
+      key={id}
+    >
       <Card.Title>
         <div className='card-title-container'>
           <div>
@@ -181,11 +183,7 @@ const SinglePostList = () => {
   return (
     <div className='single-post-list-container'>
       {
-        postsIds.map((id) =>
-          <>
-            <SinglePost id={id} />
-          </>
-        )
+        postsIds.map(id => <SinglePost id={id} />)
       }
     </div>
   )
