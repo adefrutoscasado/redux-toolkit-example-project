@@ -24,8 +24,20 @@ export const useUserReducer = () => {
   const isLoggedIn = !!session
 
   const logout = () => dispatch(logoutAction())
+
   // @ts-ignore
   const login = ({ username, password }) => dispatch(loginAction({ username, password }))
+    // By default, dispatching asyncThunks never results in errors (errors are just saved at redux)
+    // Using ".unwrap()", the dispatch action will throw an error if the asyncThunk fails. Useful if we want to create then and catch logic (instead of using isError, error, data, isFetching...)')
+    .unwrap()
+    .then((result) => {
+      // You can access the result of the asyncThunk
+      console.log(`Logged in successfully as ${JSON.stringify(result.user.username)}`)
+    })
+    .catch((err) => {
+      // You can access the error of the asyncThunk in the "catch"
+      console.log(err)
+    })
 
   const isAdmin = user?.role === 'admin'
   const isUser = user?.role === 'user'
