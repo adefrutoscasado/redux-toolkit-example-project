@@ -42,7 +42,7 @@ const postsApiSlice = api.injectEndpoints({
       }
     }),
     getPost: builder.query<Post, number>({
-      query: (id) => `${ROUTES.POSTS()}${id}`,
+      query: (id) => ROUTES.POST(id),
       // @ts-ignore
       providesTags: (result, error, id) => {
         return [{ type: POST_TAG, id }] // provide single id
@@ -59,7 +59,7 @@ const postsApiSlice = api.injectEndpoints({
     }),
     updatePost: builder.mutation<Post, Partial<Post> & Pick<Post, 'id'>>({
       query: (body) => ({
-        url: `${ROUTES.POSTS()}${body.id}`,
+        url: ROUTES.POST(body.id),
         method: 'PATCH',
         body,
       }),
@@ -68,7 +68,7 @@ const postsApiSlice = api.injectEndpoints({
     }),
     updatePostWithOptimism: builder.mutation<void, Pick<Post, 'id'> & Partial<Post>>({
       query: ({ id, ...patch }) => ({
-        url: `${ROUTES.POSTS()}${id}`,
+        url: ROUTES.POST(id),
         method: 'PATCH',
         body: patch,
       }),
@@ -102,7 +102,7 @@ const postsApiSlice = api.injectEndpoints({
     }),
     deletePost: builder.mutation<Post, Partial<Post> & Pick<Post, 'id'>>({
       query: (body) => ({
-        url: `${ROUTES.POSTS()}${body.id}`,
+        url: ROUTES.POST(body.id),
         method: 'DELETE',
         body,
       }),
