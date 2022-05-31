@@ -79,15 +79,15 @@ const postsApiSlice = api.injectEndpoints({
         try {
           await queryFulfilled
           /**
-           * Alternatively, you can trigger a re-fetch of getPosts (instead of updating it manually on frontend)
+           * Alternatively, here you can trigger a re-fetch of getPosts (instead of updating it manually on frontend).
+           * Since it's independent from 'getPost', it won't update since theres no tag invalidation.
            * dispatch(api.endpoints.getPosts.initiate(undefined, {forceRefetch: true}))
            */
         } catch {
           manualGetPostUpdate.undo()
           manualGetsPostUpdate.undo()
           /**
-           * Alternatively, on failure you can invalidate the corresponding cache tags
-           * to trigger a re-fetch:
+           * Alternatively, on failure you can invalidate the corresponding cache tags to trigger a re-fetch:
            * dispatch(api.util.invalidateTags(['Post']))
            */
         }
