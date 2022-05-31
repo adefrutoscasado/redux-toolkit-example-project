@@ -3,6 +3,8 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import counterReducer from '../../features/counter/counterSlice'
 import sessionReducer from './reducers/sessionSlice'
 import api from './api/index'
+import { StateFromReducersMapObject } from "@reduxjs/toolkit"
+
 
 const PERSISTED_STATE = 'persisted-state'
 
@@ -32,13 +34,17 @@ const saveState = (state: any) => {
 
 const persistedState = loadState()
 
+const reducer = {
+  counter: counterReducer,
+  session: sessionReducer,
+  [api.reducerPath]: api.reducer,
+}
+
+type reducerType = StateFromReducersMapObject<typeof reducer>
+
 export const store = configureStore({
-  preloadedState: persistedState,
-  reducer: {
-    counter: counterReducer,
-    session: sessionReducer,
-    [api.reducerPath]: api.reducer,
-  },
+  preloadedState: persistedState as reducerType,
+  reducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware)
 })
