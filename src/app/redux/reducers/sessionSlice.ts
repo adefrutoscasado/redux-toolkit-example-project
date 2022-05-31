@@ -1,10 +1,10 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import * as ROUTES from './../api/routes'
+import * as ROUTES from '../api/routes'
 
 export const loginAction = createAsyncThunk(
-  'user/login',
+  'session/login',
   // @ts-ignore
   async ({ username, password }) => {
     const response = await axios.post(
@@ -21,7 +21,7 @@ const initialState = {
   error: null,
 }
 
-const { reducer, actions } = createSlice({
+const sessionSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
@@ -56,13 +56,40 @@ const { reducer, actions } = createSlice({
       state.isFetching = false
       state.data = action.payload
     }
-  }
+  },
+  // Or same, with 'addCase' syntax
+
+  // extraReducers: (builder) => {
+  //   builder
+  //     .addCase(loginAction.pending, (state) => {
+  //       state.data = null
+  //       state.isFetching = true
+  //       // @ts-ignore
+  //       state.error = null
+  //     })
+  //     .addCase(loginAction.rejected, (state, action) => {
+  //       state.data = null
+  //       state.isFetching = false
+  //       // @ts-ignore
+  //       state.error = action.error
+  //     })
+  //     .addCase(loginAction.fulfilled, (state, action) => {
+  //       state.error = null
+  //       state.isFetching = false
+  //       // @ts-ignore
+  //       state.data = action.payload
+  //     })
 })
 
+const {
+  actions,
+  reducer
+} = sessionSlice
 
 export const {
   logoutAction,
   setSessionAction,
 } = actions
+
 
 export default reducer
