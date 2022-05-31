@@ -1,7 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import counterReducer from '../../features/counter/counterSlice'
-import userReducer from './reducers/userReducer'
+import sessionReducer from './reducers/sessionSlice'
 import api from './api/index'
 
 const PERSISTED_STATE = 'persisted-state'
@@ -36,7 +36,7 @@ export const store = configureStore({
   preloadedState: persistedState,
   reducer: {
     counter: counterReducer,
-    session: userReducer,
+    session: sessionReducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
