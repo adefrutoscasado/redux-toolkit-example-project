@@ -13,7 +13,14 @@ type Post = {
   id: number
 }
 
-const adapter = createEntityAdapter<Post>()
+
+const adapter = createEntityAdapter<Post>({
+  // Declare the ID field
+  selectId: (post) => post.id, // Unnecessary specification, since default its 'id'
+  // Keep the "all IDs" array sorted based on id order
+  sortComparer: (a, b) => a.id - b.id,  // sort based on id
+  // sortComparer: (a, b) => b.id - a.id, // inverse sort based on id
+})
 const initialState = adapter.getInitialState()
 
 export const POST_TAG = 'Post'
