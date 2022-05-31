@@ -116,10 +116,8 @@ const SinglePost = ({
   id,
   title = '',
 }) => {
-
   const [ optimism, setOptimism ] = useState(false)
   const { data, isFetching, error: getPostError } = useGetPostQuery(id)
-  const post = useAppSelector(selectPostById(id))
   const [ updatePost, { isLoading: isUpdatingPost, error: updatingPostError } ] = useUpdatePostMutation()
   const [ updatePostWithOptimism, { isLoading: isUpdatingPostWithOptimism, error: updatingWithOptimismPostError } ] = useUpdatePostWithOptimismMutation()
   const [ deletePost, { isLoading: isDeletingPost, error: deletingPostError } ] = useDeletePostMutation()
@@ -156,18 +154,17 @@ const SinglePost = ({
         isFetching={isFetching}
         error={getPostError}
       />
-      {/* @ts-ignore */}
       <JSONSchemaForm
         title={'Update post'}
         onSubmit={updatePost_}
         schema={updatePostJsonSchema}
-        defaultValues={post}
+        defaultValues={data}
         isFetching={isUpdatingPost_}
         error={updatingPostError_ || deletingPostError}
       />
       <FormCheck
           type='switch'
-          id={id}
+          id={id + title}
           label='Update with optimism :)'
           checked={optimism}
           onChange={ev => setOptimism(ev.target.checked)}

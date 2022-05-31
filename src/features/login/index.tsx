@@ -17,10 +17,16 @@ const loginJsonSchema = {
 }
 
 export default function Form() {
-  const { login } = useUserReducer()
+  const { login, isLoggingIn, loginError } = useUserReducer()
 
   return (
     // @ts-ignore
-    <JSONSchemaForm title={'Login'} onSubmit={login} schema={loginJsonSchema} />
+    <JSONSchemaForm
+      title={'Login'}
+      onSubmit={login}
+      schema={loginJsonSchema}
+      isFetching={isLoggingIn}
+      error={loginError}
+    />
   )
 }
