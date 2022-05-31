@@ -83,10 +83,10 @@ const JSONSchemaForm_ = ({
   return (
     // @ts-ignore
     <JSONSchemaForm
+      {...props}
       onChange={onChange}
       onSubmit={_onSubmit}
       schema={processedSchema}
-      {...props}
     >
       <Button
         type="submit"
