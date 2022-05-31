@@ -63,23 +63,28 @@ const postsApiSlice = api.injectEndpoints({
       query: ({ id, ...patch }) => ({
         url: `${ROUTES.POSTS()}${id}`,
         method: 'PATCH',
-        patch,
+        body: patch,
       }),
+      // WARNING: onQueryStarted function requires hard reload to apply in browser
       async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
-        const patchResult = dispatch(
-          // IMPORTANT: This will manually use the dispatch of updateQueryData of 'getPost' to force the update,
-          // but 'getPosts' wont be updated!
-          // @ts-ignore
-          api.util.updateQueryData('getPost', id, (draft) => {
-            console.log()
-            Object.assign(draft, patch)
-          })
-        )
+        // @ts-ignore Update the data of getPost request manually
+        const manualGetPostUpdate = dispatch(api.util.updateQueryData('getPost', id, (draft) => {
+          Object.assign(draft, patch)
+        }))
+        // @ts-ignore Update the data of getPosts request manually
+        const manualGetsPostUpdate = dispatch(api.util.updateQueryData('getPosts', undefined, (draft) => {
+          // @ts-ignore: REVIEW: Any way to use adapter.updateOne() function?
+          Object.assign(draft.entities[id], patch)
+        }))
         try {
           await queryFulfilled
+          /**
+           * Alternatively, you can trigger a re-fetch of getPosts (instead of updating it manually on frontend)
+           * dispatch(api.endpoints.getPosts.initiate(undefined, {forceRefetch: true}))
+           */
         } catch {
-          patchResult.undo()
-
+          manualGetPostUpdate.undo()
+          manualGetsPostUpdate.undo()
           /**
            * Alternatively, on failure you can invalidate the corresponding cache tags
            * to trigger a re-fetch:
@@ -130,3 +135,5 @@ export const {
 export const selectPostById = (id: Post['id']) => (state) => selectPostById_(state, id)
 
 export default postsApiSlice
+
+export const apiMain = api
