@@ -4,8 +4,11 @@
 }
 
 .all-posts {
-  border: 1px solid black;
   min-width: 320px !important;
+}
+
+.control-label {
+  padding-right: 5px;
 }
 
 .special-single-post-list-container {
@@ -49,6 +52,10 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.rjsf > button {
+  margin-bottom: 6px;
 }
 
 .form-submit-button.is-fetching {
