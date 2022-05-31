@@ -12,7 +12,7 @@ import {
   selectAllPosts,
   selectPostsTotal,
   selectPostById,
-} from './../../app/redux/api/post'
+} from './postApiSlice'
 import {
   useAppSelector,
 } from './../../app/hooks'
@@ -55,7 +55,7 @@ const updatePostJsonSchema = {
 }
 
 
-const Layout = ({
+const Data = ({
   isFetching = false,
   error = null as any,
   data = null as any,
@@ -96,7 +96,7 @@ const AllPosts = () => {
   return (
     <Card className='all-posts'>
       <Card.Title>All posts (total: {total})</Card.Title>
-      <Layout
+      <Data
         data={allPosts}
         isFetching={isFetching}
         error={getPostsError}
@@ -129,9 +129,7 @@ const SinglePost = ({
   const updatingPostError_ = optimism ? updatingWithOptimismPostError : updatingPostError
 
   return (
-    <Card
-      key={id}
-    >
+    <Card>
       <Card.Title>
         <div className='card-title-container'>
           <div>
@@ -153,7 +151,7 @@ const SinglePost = ({
           </div>
         </div>
       </Card.Title>
-      <Layout
+      <Data
         data={data}
         isFetching={isFetching}
         error={getPostError}
@@ -183,7 +181,7 @@ const SinglePostList = () => {
   return (
     <div className='single-post-list-container'>
       {
-        postsIds.map(id => <SinglePost id={id} />)
+        postsIds.map(id => <SinglePost id={id} key={id} />)
       }
     </div>
   )

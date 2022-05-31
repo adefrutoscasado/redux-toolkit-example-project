@@ -1,11 +1,11 @@
 
-import * as ROUTES from './routes'
+import * as ROUTES from '../../app/redux/api/routes'
 import {
   createEntityAdapter,
   createSelector,
   EntityState,
 } from '@reduxjs/toolkit'
-import api from './index'
+import api from '../../app/redux/api/index'
 
 type Post = {
   name: string,
