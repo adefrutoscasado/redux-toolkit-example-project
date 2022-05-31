@@ -67,8 +67,8 @@ const postsApiSlice = api.injectEndpoints({
       }),
       async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
-          // IMPORTANT: This will manually use the dispatch of updateQueryData of 'getPost',
-          // but 'getPosts' wont be updated
+          // IMPORTANT: This will manually use the dispatch of updateQueryData of 'getPost' to force the update,
+          // but 'getPosts' wont be updated!
           // @ts-ignore
           api.util.updateQueryData('getPost', id, (draft) => {
             console.log()
@@ -97,7 +97,6 @@ const postsApiSlice = api.injectEndpoints({
       // @ts-ignore
       invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }], // invalidate single id
     }),
-    // TODO: Create an optimistic update https://redux-toolkit.js.org/rtk-query/usage/manual-cache-updates#optimistic-updates
   }),
 })
 

@@ -16,9 +16,15 @@ const loadState = () => {
 }
 
 const saveState = (state: any) => {
+  // REVIEW: Is there a better way to manage persistent session?
   try {
-    const serializedState = JSON.stringify({ session: state.session })
-    localStorage.setItem(PERSISTED_STATE, serializedState)
+    if (state.session.data) {
+      const serializedState = JSON.stringify({ session: state.session })
+      localStorage.setItem(PERSISTED_STATE, serializedState)
+    }
+    if (state.session.isFetching || state.session.error || !state.session) {
+      localStorage.removeItem(PERSISTED_STATE)
+    }
   } catch (error) {
     // Ignore write errors
   }

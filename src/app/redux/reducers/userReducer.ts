@@ -27,12 +27,12 @@ const { reducer, actions } = createSlice({
   reducers: {
     setSessionAction: (state, action) => {
       state.data = action.payload
-      state.isFetching = true
+      state.isFetching = false
       state.error = null
     },
     logoutAction: (state) => {
       state.data = null
-      state.isFetching = true
+      state.isFetching = false
       state.error = null
     },
   },
