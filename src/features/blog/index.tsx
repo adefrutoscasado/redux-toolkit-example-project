@@ -18,6 +18,7 @@ import {
 } from './../../app/hooks'
 import JSONSchemaForm from './../../components/JSONSchemaForm'
 import { Spinner, Alert, Card, Button, FormCheck } from './../../components/bootstrap'
+import { useSelector } from 'react-redux'
 
 
 const postPostJsonSchema = {
@@ -121,6 +122,7 @@ const SinglePost = ({
   const [ updatePost, { isLoading: isUpdatingPost, error: updatingPostError } ] = useUpdatePostMutation()
   const [ updatePostWithOptimism, { isLoading: isUpdatingPostWithOptimism, error: updatingWithOptimismPostError } ] = useUpdatePostWithOptimismMutation()
   const [ deletePost, { isLoading: isDeletingPost, error: deletingPostError } ] = useDeletePostMutation()
+  const post = useSelector(selectPostById(id))
 
   const updatePost_ = optimism ? updatePostWithOptimism : updatePost
   const isUpdatingPost_ = optimism ? isUpdatingPostWithOptimism : isUpdatingPost
@@ -158,7 +160,8 @@ const SinglePost = ({
         title={'Update post'}
         onSubmit={updatePost_}
         schema={updatePostJsonSchema}
-        defaultValues={data}
+        // REVIEW: Why using data instead of following post generates strange behaviour in json schema form?
+        defaultValues={post}
         isFetching={isUpdatingPost_}
         error={updatingPostError_ || deletingPostError}
       />
