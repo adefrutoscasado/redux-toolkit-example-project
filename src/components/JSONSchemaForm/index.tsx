@@ -81,7 +81,6 @@ const JSONSchemaForm_ = ({
   }
 
   return (
-    // @ts-ignore
     <JSONSchemaForm
       {...props}
       onChange={onChange}

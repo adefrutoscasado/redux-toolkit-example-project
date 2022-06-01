@@ -2,25 +2,24 @@ import { useUserReducer } from "../../app/hooks"
 import JSONSchemaForm from "../../components/JSONSchemaForm"
 
 const loginJsonSchema = {
-  'type': 'object',
-  'properties': {
-    'username': {
-      'type': 'string',
-      'default': 'a',
+  type: 'object',
+  properties: {
+    username: {
+      type: 'string',
+      default: 'a',
     },
-    'password': {
-      'type': 'string',
-      'default': 'a',
+    password: {
+      type: 'string',
+      default: 'a',
     },
   },
-  'required': ['username', 'password'],
+  required: ['username', 'password'],
 }
 
 export default function Form() {
   const { login, isLoggingIn, loginError } = useUserReducer()
 
   return (
-    // @ts-ignore
     <JSONSchemaForm
       title={'Login'}
       onSubmit={login}

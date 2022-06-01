@@ -8,9 +8,9 @@ import {
 import api, { POST_TAG } from '../../app/redux/api/index'
 
 type Post = {
+  id: number,
   name: string,
   description: string,
-  id: number
 }
 
 
@@ -115,7 +115,6 @@ export const {
   useUpdatePostWithOptimismMutation,
 } = postsApiSlice
 
-// @ts-ignore
 const selectPostsResult = postsApiSlice.endpoints.getPosts.select()
 
 const selectPostsResultData = createSelector(
@@ -129,8 +128,8 @@ export const {
   selectAll: selectAllPosts,
   selectTotal: selectPostsTotal,
   selectById: selectPostById_,
-  //  @ts-ignore
-} = adapter.getSelectors(state => selectPostsResultData(state) ?? initialState)
+  // @ts-ignore
+} = adapter.getSelectors((state) => selectPostsResultData(state) ?? initialState)
 
 // helper to use 'selectById' cleaner
 export const selectPostById = (id: Post['id']) => (state) => selectPostById_(state, id)
