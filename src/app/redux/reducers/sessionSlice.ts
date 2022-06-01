@@ -2,10 +2,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import * as ROUTES from '../api/routes'
+import type { RootState } from './../../redux/store'
 
-export const loginAction = createAsyncThunk(
+type loginResponse = {
+  access_token: string,
+  refresh_token: string,
+  user: {
+    id: number
+    name: string
+    role: string
+    username: string
+  }
+}
+
+type loginArgs = {
+  username : string,
+  password : string
+}
+
+export const loginAction = createAsyncThunk<loginResponse, loginArgs>(
   'session/login',
-  // @ts-ignore
   async ({ username, password }) => {
     const response = await axios.post(
       ROUTES.LOGIN(),
@@ -16,7 +32,7 @@ export const loginAction = createAsyncThunk(
 )
 
 const initialState = {
-  data: null,
+  data: null as null | loginResponse,
   isFetching: false,
   error: null,
 }
@@ -91,5 +107,6 @@ export const {
   setSessionAction,
 } = actions
 
+export const selectSession = (state: RootState) => state.session
 
 export default reducer
