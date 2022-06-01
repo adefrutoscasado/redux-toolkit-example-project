@@ -5,7 +5,7 @@ import {
   createSelector,
   EntityState,
 } from '@reduxjs/toolkit'
-import api from '../../app/redux/api/index'
+import api, { POST_TAG } from '../../app/redux/api/index'
 
 type Post = {
   name: string,
@@ -23,8 +23,6 @@ const adapter = createEntityAdapter<Post>({
 })
 const initialState = adapter.getInitialState()
 
-export const POST_TAG = 'Post'
-
 const postsApiSlice = api.injectEndpoints({
   endpoints: (builder) => ({
     getPosts: builder.query<EntityState<Post>, void>({
@@ -37,15 +35,14 @@ const postsApiSlice = api.injectEndpoints({
         const tags = result && (Object.keys(result?.entities || [])) ?
           Object.values(result.ids).map((id) => ({ type: POST_TAG, id }))
           :
-          [{ type: POST_TAG, id: 'LIST' }] // provide various ids. If no id, use the tag 'list'
+          [{ type: POST_TAG, id: 'LIST' }] // provides various ids. If no id, use the tag 'list'
         return tags
       }
     }),
     getPost: builder.query<Post, number>({
       query: (id) => ROUTES.POST(id),
-      // @ts-ignore
       providesTags: (result, error, id) => {
-        return [{ type: POST_TAG, id }] // provide single id
+        return [{ type: POST_TAG, id }] // provides single id
       },
     }),
     postPost: builder.mutation({
@@ -54,8 +51,7 @@ const postsApiSlice = api.injectEndpoints({
         method: 'POST',
         body,
       }),
-      // @ts-ignore
-      invalidatesTags: [POST_TAG], // invalidate entire list
+      invalidatesTags: [POST_TAG], // invalidates entire list
     }),
     updatePost: builder.mutation<Post, Partial<Post> & Pick<Post, 'id'>>({
       query: (body) => ({
@@ -63,7 +59,6 @@ const postsApiSlice = api.injectEndpoints({
         method: 'PATCH',
         body,
       }),
-      // @ts-ignore
       invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }], // invalidate single id
     }),
     updatePostWithOptimism: builder.mutation<void, Pick<Post, 'id'> & Partial<Post>>({
@@ -86,7 +81,7 @@ const postsApiSlice = api.injectEndpoints({
         try {
           await queryFulfilled
           /**
-           * Alternatively, here you can trigger a re-fetch of getPosts (instead of updating it manually on frontend).
+           * Alternatively, here you can trigger a re-fetch of getPosts (instead of updating it manually using 'manualGetsPostUpdate').
            * Since it's independent from 'getPost', it won't update since theres no tag invalidation.
            * dispatch(api.endpoints.getPosts.initiate(undefined, {forceRefetch: true}))
            */
@@ -95,7 +90,7 @@ const postsApiSlice = api.injectEndpoints({
           manualGetsPostUpdate.undo()
           /**
            * Alternatively, on failure you can invalidate the corresponding cache tags to trigger a re-fetch:
-           * dispatch(api.util.invalidateTags(['Post']))
+           * dispatch(api.util.invalidateTags(['Post'])) // invalidates entire list
            */
         }
       },
@@ -106,7 +101,6 @@ const postsApiSlice = api.injectEndpoints({
         method: 'DELETE',
         body,
       }),
-      // @ts-ignore
       invalidatesTags: (result, error, arg) => [{ type: POST_TAG, id: arg.id }], // invalidate single id
     }),
   }),
