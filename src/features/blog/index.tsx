@@ -12,47 +12,46 @@ import {
   selectAllPosts,
   selectPostsTotal,
   selectPostById,
-  apiMain,
 } from './postApiSlice'
 import {
   useAppSelector,
 } from './../../app/hooks'
 import JSONSchemaForm from './../../components/JSONSchemaForm'
 import { Spinner, Alert, Card, Button, FormCheck } from './../../components/bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 
 const postPostJsonSchema = {
-  'type': 'object',
-  'properties': {
-    'name': {
-      'type': 'string',
-      'default': 'name',
+  type: 'object',
+  properties: {
+    name: {
+      type: 'string',
+      default: 'name',
     },
-    'description': {
-      'type': 'string',
-      'default': 'description',
+    description: {
+      type: 'string',
+      default: 'description',
     },
   },
-  'required': ['name', 'description'],
+  required: ['name', 'description'],
 }
 
 const updatePostJsonSchema = {
-  'type': 'object',
-  'properties': {
-    'id': {
-      'type': 'number',
+  type: 'object',
+  properties: {
+    id: {
+      type: 'number',
     },
-    'name': {
-      'type': 'string',
-      'default': 'name',
+    name: {
+      type: 'string',
+      default: 'name',
     },
-    'description': {
-      'type': 'string',
-      'default': 'description',
+    description: {
+      type: 'string',
+      default: 'description',
     },
   },
-  'required': ['id', 'name', 'description'],
+  required: ['id', 'name', 'description'],
 }
 
 
@@ -102,7 +101,6 @@ const AllPosts = () => {
         isFetching={isFetching}
         error={getPostsError}
       />
-      {/* @ts-ignore */}
       <JSONSchemaForm
         title={'Create post'}
         onSubmit={postPost}
