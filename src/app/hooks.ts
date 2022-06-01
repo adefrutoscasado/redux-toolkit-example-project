@@ -29,7 +29,7 @@ export const useUserReducer = () => {
     .unwrap()
     .then((result) => {
       // Here you can access the result of the asyncThunk
-      console.log(`Logged in successfully as ${JSON.stringify(result.user.username)}`)
+      console.log(`Logged in successfully as ${result.user.username}`)
     })
     .catch((err) => {
       // Here you can access the error of the asyncThunk. If you don't use 'unwrap', this part will never be reached.
