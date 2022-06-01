@@ -1,6 +1,6 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from './redux/store'
-import { logoutAction, loginAction } from './redux/reducers/sessionSlice'
+import { logoutAction, loginAction, selectSession } from './redux/reducers/sessionSlice'
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>()
@@ -13,19 +13,16 @@ export const useUserReducer = () => {
     error: loginError,
     isFetching: isLoggingIn,
     data: session,
-  } = useAppSelector(state => state?.session) || {}
+  } = useAppSelector(selectSession)
 
-  const {
-    access_token,
-    refresh_token,
-    user,
-  } = session || {} as any
+  const access_token = session?.access_token
+  const refresh_token = session?.refresh_token
+  const user = session?.user
 
   const isLoggedIn = !!session
 
   const logout = () => dispatch(logoutAction())
 
-  // @ts-ignore
   const login = ({ username, password }) => dispatch(loginAction({ username, password }))
     // By default, dispatching asyncThunks never results in errors (errors are just saved at redux)
     // Using 'unwrap', the dispatch action will throw an error if the asyncThunk fails. Useful if we want to create then and catch logic (instead of using isError, error, data, isFetching states...).
