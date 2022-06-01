@@ -84,7 +84,8 @@ const sessionSlice = createSlice({
   //     state.isFetching = false
   //     state.error = action.error
   //   },
-  //   [loginAction.fulfilled.type]: (state, action) => {
+  //   // @ts-ignore
+  //   [loginAction.fulfilled]: (state, action) => {
   //     state.error = null
   //     state.isFetching = false
   //     state.data = action.payload
