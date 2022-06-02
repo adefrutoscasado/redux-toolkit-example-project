@@ -1,9 +1,10 @@
 
 
 import { createEntityAdapter, createSlice, nanoid } from '@reduxjs/toolkit'
+import { RootState } from '../../app/redux/store'
 
 type Todo = {
-  id: number,
+  id: string,
   description: string,
   priority: number,
 }
@@ -27,8 +28,8 @@ const initialState = [
     id: nanoid(),
     priority: 2,
   },
-]
-// @ts-ignore
+] as Todo[]
+
 const filledState = adapter.upsertMany(emptyState, initialState)
 
 export const todoSlice = createSlice({
@@ -40,15 +41,15 @@ export const todoSlice = createSlice({
       reducer: (state, action) => {
         adapter.addOne(state, action.payload)
       },
-      // @ts-ignore TODO: Whats wrong here?
-      prepare: (todo) => {
+      // TODO: How to type return type?
+      prepare: (todo: Omit<Todo, 'id' | 'priority'>): any => {
         // IMPORTANT: Should return an object with payload as key
         return { payload: {...todo, id: nanoid(), priority: 0} }
       },
     },
     incrementTodoPriority: (state, action) => {
       const { id } = action.payload
-      const {selectById} = adapter.getSelectors()
+      const { selectById } = adapter.getSelectors()
       const selectedTodo = selectById(state, id)
       // Cannot mutate selected by id todo since its readonly: Cannot assign to read only property 'priority' of object
       // if (selectedTodo) selectedTodo.priority = selectedTodo.priority+1
@@ -69,7 +70,7 @@ export const todoSlice = createSlice({
     //   if (todoToModify) todoToModify.priority++ // You can just mutate that desired entity
     // },
     updateTodo: (state, action) => {
-      const { id, ...rest } = action.payload
+      const { id, ...rest } = action.payload as Todo
       adapter.updateOne(
         state,
         {
@@ -80,7 +81,7 @@ export const todoSlice = createSlice({
         }
       )
     },
-    // upsertOne doesnt need the 'changes' key. Just use adapter.updateOne(state, {id, description}.
+    // upsertOne doesnt need the 'changes' key. Just use adapter.upsertOne(state, {id, description, priority}).
     // So passing the function works fine
     upsertTodo: adapter.upsertOne,
   },
@@ -98,10 +99,9 @@ export const {
   selectEntities: selectTodosEntities,
   selectIds: selectTodosIds,
   selectById: selectTodoById_,
-  // @ts-ignore
-} = adapter.getSelectors((state) => state.todo)
+} = adapter.getSelectors((state: RootState) => state.todo)
 
-export const selectPostById = (id: Todo['id']) => (state) => selectTodoById_(state, id)
+export const selectPostById = (id: Todo['id']) => (state: RootState) => selectTodoById_(state, id)
 
 export default todoSlice.reducer
 
