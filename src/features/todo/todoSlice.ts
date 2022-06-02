@@ -57,7 +57,7 @@ export const todoSlice = createSlice({
         {
           id: id,
           changes: {
-            priority: selectedTodo?.priority
+            priority: selectedTodo?.priority + 1
           }
         }
       )
