@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react'
 import Counter from './features/counter'
 import Login from './features/login'
 import Blog from './features/blog'
+import Todo from './features/todo'
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,16 +19,20 @@ const Main = () => {
   return (
     <>
       <Link to={ROUTES.COUNTER}>Counter</Link>
+      <Link to={ROUTES.TODO}>ToDo</Link>
       <Link to={ROUTES.BLOG}>Blog</Link>
       <Link onClick={logout}>Logout</Link>
       <Switch>
         <>
-          <Redirect from={'*'} to={ROUTES.BLOG} />
+          <Redirect from={'*'} to={ROUTES.TODO} />
           <Route path={ROUTES.COUNTER}>
             <Counter />
           </Route>
           <Route path={ROUTES.BLOG}>
             <Blog />
+          </Route>
+          <Route path={ROUTES.TODO}>
+            <Todo />
           </Route>
         </>
       </Switch>
