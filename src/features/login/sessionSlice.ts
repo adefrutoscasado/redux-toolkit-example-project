@@ -1,9 +1,7 @@
-// TODO: Move this file to login example
-
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import * as ROUTES from '../api/routes'
-import type { RootState } from './../../redux/store'
+import * as ROUTES from '../../app/redux/api/routes'
+import type { RootState } from '../../app/redux/store'
 
 type loginResponse = {
   access_token: string,

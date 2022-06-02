@@ -1,7 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import counterReducer from '../../features/counter/counterSlice'
-import sessionReducer from './reducers/sessionSlice'
+import sessionReducer from '../../features/login/sessionSlice'
 import todoReducer from '../../features/todo/todoSlice'
 import api from './api/index'
 import { StateFromReducersMapObject } from "@reduxjs/toolkit"

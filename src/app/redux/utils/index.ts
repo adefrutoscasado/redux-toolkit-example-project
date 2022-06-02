@@ -1,7 +1,7 @@
 import * as ROUTES from './../api/routes'
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query'
-import { logoutAction, setSessionAction } from '../reducers/sessionSlice'
+import { logoutAction, setSessionAction } from '../../../features/login/sessionSlice'
 import { Mutex } from 'async-mutex'
 // create a new mutex
 const mutex = new Mutex()
