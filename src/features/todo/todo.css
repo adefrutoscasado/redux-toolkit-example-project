@@ -1,0 +1,25 @@
+.todo-card {
+  width: fit-content;
+  background-color: #dfdcf5;
+}
+
+.todo-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.todo-actions {
+  max-width: 100%;
+}
+
+.todo-actions>button {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
