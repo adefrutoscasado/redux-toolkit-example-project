@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import counterReducer from '../../features/counter/counterSlice'
 import sessionReducer from './reducers/sessionSlice'
+import todoReducer from '../../features/todo/todoSlice'
 import api from './api/index'
 import { StateFromReducersMapObject } from "@reduxjs/toolkit"
 
@@ -37,6 +38,7 @@ const persistedState = loadState()
 const reducer = {
   counter: counterReducer,
   session: sessionReducer,
+  todo:todoReducer,
   [api.reducerPath]: api.reducer,
 }
 
