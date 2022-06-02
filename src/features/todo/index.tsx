@@ -82,7 +82,7 @@ const Todos = () => {
       />
       <div>
         {
-          todos.map(id => <Todo id={id} />)
+          todos.map(id => <Todo id={id} key={id} />)
         }
       </div>
     </div>
