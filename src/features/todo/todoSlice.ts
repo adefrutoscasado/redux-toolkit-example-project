@@ -69,6 +69,22 @@ export const todoSlice = createSlice({
     //   const todoToModify = state.entities[id] // state is formed by { entities, id }
     //   if (todoToModify) todoToModify.priority++ // You can just mutate that desired entity
     // },
+    decrementTodoPriority: (state, action) => {
+      const { id } = action.payload
+      const { selectById } = adapter.getSelectors()
+      const selectedTodo = selectById(state, id)
+      // Cannot mutate selected by id todo since its readonly: Cannot assign to read only property 'priority' of object
+      // if (selectedTodo) selectedTodo.priority = selectedTodo.priority+1
+      if (selectedTodo) adapter.updateOne(
+        state,
+        {
+          id: id,
+          changes: {
+            priority: selectedTodo?.priority - 1
+          }
+        }
+      )
+    },
     updateTodo: (state, action) => {
       const { id, ...rest } = action.payload as Todo
       adapter.updateOne(
@@ -84,6 +100,7 @@ export const todoSlice = createSlice({
     // upsertOne doesnt need the 'changes' key. Just use adapter.upsertOne(state, {id, description, priority}).
     // So passing the function works fine
     upsertTodo: adapter.upsertOne,
+    deleteTodo: adapter.removeOne,
   },
 })
 
@@ -92,6 +109,8 @@ export const {
   updateTodo,
   upsertTodo,
   incrementTodoPriority,
+  decrementTodoPriority,
+  deleteTodo,
 } = todoSlice.actions
 
 export const {
