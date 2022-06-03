@@ -41,15 +41,23 @@ export default function Form() {
       console.log('Error is available at catch due to using unwrap: ', error)
     })
 
-
+  console.log(loginError)
 
   return (
-    <JSONSchemaForm
-      title={'Login'}
-      onSubmit={onSubmit}
-      schema={loginJsonSchema}
-      isFetching={isLoggingIn}
-      error={loginError}
-    />
+    <>
+      <JSONSchemaForm
+        title={'Login'}
+        onSubmit={onSubmit}
+        schema={loginJsonSchema}
+        isFetching={isLoggingIn}
+        error={loginError}
+      />
+      {loginError && loginError.code === "ERR_NETWORK" &&
+        <>
+          <div>Have you started the server?</div>
+          <div>Use: <code>npm run mock-server:dev</code></div>
+        </>
+      }
+    </>
   )
 }
