@@ -1,6 +1,6 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from './redux/store'
-import { logoutAction, loginAction, selectSession } from '../features/login/sessionSlice'
+import { logoutAction, loginAsyncThunk, selectSession } from '../features/login/sessionSlice'
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = () => useDispatch<AppDispatch>()
@@ -23,7 +23,7 @@ export const useUserReducer = () => {
 
   const logout = () => dispatch(logoutAction())
 
-  const login = ({ username, password }) => dispatch(loginAction({ username, password }))
+  const login = ({ username, password }) => dispatch(loginAsyncThunk({ username, password }))
 
   const isAdmin = user?.role === 'admin'
   const isUser = user?.role === 'user'

@@ -1,7 +1,7 @@
 import * as ROUTES from './../api/routes'
 import { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query'
-import { logoutAction, setSessionAction } from '../../../features/login/sessionSlice'
+import { logoutAction, refreshTokenAsyncThunk } from '../../../features/login/sessionSlice'
 import { Mutex } from 'async-mutex'
 // create a new mutex
 const mutex = new Mutex()
@@ -33,21 +33,16 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
     if (!mutex.isLocked()) {
       const release = await mutex.acquire()
       try {
-        const refreshResult = await baseQuery({
-          url: ROUTES.REFRESH(),
-          method: 'POST',
-          // @ts-ignore
-          body: { refresh_token: api.getState().session?.data?.refresh_token }
-        }, api, extraOptions)
-
-        if (refreshResult.data) {
-          api.dispatch(setSessionAction(refreshResult.data))
-          // retry the initial query
-          result = await baseQuery(args, api, extraOptions)
-        } else {
-          api.dispatch(logoutAction())
-        }
-      } finally {
+        // @ts-ignore: TODO: Type of api.getState()
+        await api.dispatch(refreshTokenAsyncThunk({ refresh_token: api.getState().session?.data?.refresh_token })).unwrap()
+        // Since we use 'unwrap', if 'refreshTokenAsyncThunk' doesnt throw an error, means we hace refreshed the token correctly.
+        // So we can repeat the original request again
+        result = await baseQuery(args, api, extraOptions)
+      }
+      catch (err) {
+        console.log('Refresh token is expired too')
+      }
+      finally {
         // release must be called once the mutex should be released again.
         release()
       }

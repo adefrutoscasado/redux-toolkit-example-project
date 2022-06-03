@@ -1,4 +1,13 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import {
+  createSlice,
+  createAsyncThunk,
+  isAsyncThunkAction,
+  isPending,
+  isRejected,
+  isFulfilled,
+  createAction,
+  isAnyOf
+} from '@reduxjs/toolkit'
 import axios from 'axios'
 import * as ROUTES from '../../app/redux/api/routes'
 import type { RootState } from '../../app/redux/store'
@@ -19,12 +28,27 @@ type loginArgs = {
   password : string
 }
 
-export const loginAction = createAsyncThunk<loginResponse, loginArgs>(
+export const loginAsyncThunk = createAsyncThunk<loginResponse, loginArgs>(
   'session/login',
   async ({ username, password }) => {
     const response = await axios.post(
       ROUTES.LOGIN(),
       { username, password }
+    )
+    return response.data
+  }
+)
+
+type refreshTokenArgs = {
+  refresh_token : string,
+}
+
+export const refreshTokenAsyncThunk = createAsyncThunk<loginResponse, refreshTokenArgs>(
+  'session/refresh',
+  async ({ refresh_token }) => {
+    const response = await axios.post(
+      ROUTES.REFRESH(),
+      { refresh_token }
     )
     return response.data
   }
@@ -36,40 +60,53 @@ const initialState = {
   error: null as any,
 }
 
+export const logoutAction = createAction<void>('session/logout')
+
 const sessionSlice = createSlice({
   name: 'session',
   initialState,
   reducers: {
-    setSessionAction: (state, action) => {
-      state.data = action.payload
-      state.isFetching = false
-      state.error = null
-    },
-    logoutAction: (state) => {
-      state.data = null
-      state.isFetching = false
-      state.error = null
-    },
+    // We could specify logoutAction reducer here, but using extraReducer we could reuse the logic for various actions (more scalability)
+    // logoutAction: (state) => {
+    //   return initialState
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginAction.pending, (state) => {
+      .addCase(logoutAction, (state, action) => {
+        return initialState
+      })
+      // isFetching is associated to login, no refresh. Refreshing token is transparent to the user and doesnt need to be rendered
+      .addMatcher(isPending(loginAsyncThunk), (state) => {
         state.data = null
         state.isFetching = true
         state.error = null
       })
-      .addCase(loginAction.rejected, (state, action) => {
+      // Or same, using addCase function
+      // .addCase(loginAsyncThunk.pending, (state) => {
+      //   state.data = null
+      //   state.isFetching = true
+      //   state.error = null
+      // })
+      // Similar to use isAnyOf(loginAsyncThunk.fulfilled, refreshTokenAsyncThunk.fulfilled)
+      .addMatcher(isAnyOf(isFulfilled(loginAsyncThunk), isFulfilled(refreshTokenAsyncThunk)), (state, action) => {
+        state.data = action.payload
+        state.isFetching = false
+        state.error = null
+      })
+      // Similar to use isAnyOf(loginAsyncThunk.fulfilled, refreshTokenAsyncThunk.fulfilled)
+      .addMatcher(isAnyOf(isRejected(loginAsyncThunk), isRejected(refreshTokenAsyncThunk)), (state, action) => {
         state.data = null
         state.isFetching = false
         state.error = action.error
       })
-      .addCase(loginAction.fulfilled, (state, action) => {
-        state.error = null
-        state.isFetching = false
-        state.data = action.payload
-      })
-  },
-  // Or same, without builder syntax (Not recomended, see https://github.com/reduxjs/redux-toolkit/issues/478#issuecomment-792889946)
+      .addMatcher(
+        isAsyncThunkAction(loginAsyncThunk, refreshTokenAsyncThunk),
+        (state, action) => {
+          // I match on everything action dispatched by loginAsyncThunk or refreshTokenAsyncThunk regardless of the lifecycle
+        }
+      )
+  }
+  // Examples without builder syntax (Not recomended, see https://github.com/reduxjs/redux-toolkit/issues/478#issuecomment-792889946)
   // extraReducers: {
   //   // @ts-ignore
   //   [loginAction.pending]: (state, action) => {
@@ -90,17 +127,13 @@ const sessionSlice = createSlice({
   //     state.data = action.payload
   //   }
   // }
-  })
+})
 
 const {
   actions,
   reducer
 } = sessionSlice
 
-export const {
-  logoutAction,
-  setSessionAction,
-} = actions
 
 export const selectSession = (state: RootState) => state.session
 
