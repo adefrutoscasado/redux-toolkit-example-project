@@ -1,6 +1,6 @@
 
 
-import { createEntityAdapter, createSlice, nanoid } from '@reduxjs/toolkit'
+import { createEntityAdapter, createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../app/redux/store'
 
 type Todo = {
@@ -10,8 +10,7 @@ type Todo = {
 }
 
 const adapter = createEntityAdapter<Todo>({
-  // Not working when changing it live?
-  sortComparer: (a, b) => b.priority - a.priority,  // sort based on id
+  sortComparer: (a, b) => b.priority - a.priority,  // sort based on priority (desc)
 })
 
 // You can pass additional state
@@ -38,11 +37,11 @@ export const todoSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     addTodo: {
-      reducer: (state, action) => {
+      reducer: (state, action: PayloadAction<Todo>) => {
         adapter.addOne(state, action.payload)
       },
-      // TODO: How to type return type?
-      prepare: (todo: Omit<Todo, 'id' | 'priority'>): any => {
+      // Type previous reducer correctly using PayloadAction to make 'prepare' typed
+      prepare: (todo: Omit<Todo, 'id' | 'priority'>) => {
         // IMPORTANT: Should return an object with payload as key
         return { payload: {...todo, id: nanoid(), priority: 0} }
       },
