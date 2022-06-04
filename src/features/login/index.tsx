@@ -1,5 +1,5 @@
-import { useUserReducer } from "../../app/hooks"
-import JSONSchemaForm from "../../components/JSONSchemaForm"
+import { useUserReducer } from './hooks'
+import JSONSchemaForm from '../../components/JSONSchemaForm'
 
 const loginJsonSchema = {
   type: 'object',
