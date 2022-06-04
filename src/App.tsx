@@ -10,7 +10,7 @@ import {
   Redirect,
   Link,
 } from 'react-router-dom'
-import { useUserReducer } from './app/hooks'
+import { useUserReducer } from './features/login/hooks'
 import * as ROUTES from './routes'
 import { Nav } from './components/bootstrap'
 import { useLocation, useHistory } from 'react-router-dom'
