@@ -12,19 +12,46 @@ import {
 } from 'react-router-dom'
 import { useUserReducer } from './app/hooks'
 import * as ROUTES from './routes'
+import { Nav } from './components/bootstrap'
+import { useLocation } from 'react-router-dom'
+
+const NavLink = ({
+  to = undefined as (undefined | string),
+  children = '',
+  onClick = () => {},
+  ...props
+}) =>
+  <Nav.Link href={to} {...props}>
+    <Link to={to} onClick={onClick}>{children}</Link>
+  </Nav.Link>
+
 
 const Main = () => {
   const { logout } = useUserReducer()
+  const { pathname } = useLocation()
 
   return (
     <>
-      <Link to={ROUTES.COUNTER}>Counter</Link>
-      <Link to={ROUTES.TODO}>ToDo</Link>
-      <Link to={ROUTES.BLOG}>Blog</Link>
-      <Link onClick={logout}>Logout</Link>
+      <div className='nav-container'>
+        <Nav
+          variant='tabs'
+          activeKey={pathname}
+          className='main-nav'
+        >
+          <NavLink to={ROUTES.COUNTER}>Counter</NavLink>
+          <NavLink to={ROUTES.TODO}>Todo</NavLink>
+          <NavLink to={ROUTES.BLOG}>Blog</NavLink>
+        </Nav>
+        <Nav
+          variant='tabs'
+          activeKey={pathname}
+        >
+          <NavLink variant={'button'} onClick={logout}>Logout</NavLink>
+        </Nav>
+      </div>
       <Switch>
         <>
-          <Redirect from={'*'} to={ROUTES.TODO} />
+          <Redirect from={'*'} to={ROUTES.COUNTER} />
           <Route path={ROUTES.COUNTER}>
             <Counter />
           </Route>
