@@ -41,8 +41,6 @@ export default function Form() {
       console.log('Error is available at catch due to using unwrap: ', error)
     })
 
-  console.log(loginError)
-
   return (
     <>
       <JSONSchemaForm
