@@ -82,11 +82,11 @@ const sessionSlice = createSlice({
         state.error = null
       })
       // Or same, using addCase function
-      // .addCase(loginAsyncThunk.pending, (state) => {
-      //   state.data = null
-      //   state.isFetching = true
-      //   state.error = null
-      // })
+      .addCase(loginAsyncThunk.pending, (state) => {
+        state.data = null
+        state.isFetching = true
+        state.error = null
+      })
       // Similar to use isAnyOf(loginAsyncThunk.fulfilled, refreshTokenAsyncThunk.fulfilled)
       .addMatcher(isAnyOf(isFulfilled(loginAsyncThunk), isFulfilled(refreshTokenAsyncThunk)), (state, action) => {
         state.data = action.payload
@@ -106,7 +106,7 @@ const sessionSlice = createSlice({
         }
       )
   }
-  // Examples without builder syntax (Not recomended, see https://github.com/reduxjs/redux-toolkit/issues/478#issuecomment-792889946)
+  // Examples without builder syntax (Not recomended, see https://redux-toolkit.js.org/api/createReducer#usage-with-the-map-object-notation)
   // extraReducers: {
   //   // @ts-ignore
   //   [loginAction.pending]: (state, action) => {
