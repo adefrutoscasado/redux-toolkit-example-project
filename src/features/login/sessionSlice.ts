@@ -93,7 +93,7 @@ const sessionSlice = createSlice({
         state.isFetching = false
         state.error = null
       })
-      // Similar to use isAnyOf(loginAsyncThunk.fulfilled, refreshTokenAsyncThunk.fulfilled)
+      // Similar to use isAnyOf(loginAsyncThunk.rejected, refreshTokenAsyncThunk.rejected)
       .addMatcher(isAnyOf(isRejected(loginAsyncThunk), isRejected(refreshTokenAsyncThunk)), (state, action) => {
         state.data = null
         state.isFetching = false
