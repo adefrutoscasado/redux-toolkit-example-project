@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useLayoutEffect, useMemo } from 'react'
 import Counter from './features/counter'
 import Login from './features/login'
 import Blog from './features/blog'
@@ -13,7 +13,7 @@ import {
 import { useUserReducer } from './app/hooks'
 import * as ROUTES from './routes'
 import { Nav } from './components/bootstrap'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 
 const NavLink = ({
   to = undefined as (undefined | string),
@@ -21,7 +21,7 @@ const NavLink = ({
   onClick = () => {},
   ...props
 }) =>
-  <Nav.Link href={to} {...props}>
+  <Nav.Link href={to} {...props} onClick={event => event.preventDefault()}>
     <Link to={to} onClick={onClick}>{children}</Link>
   </Nav.Link>
 
@@ -29,6 +29,19 @@ const NavLink = ({
 const Main = () => {
   const { logout } = useUserReducer()
   const { pathname } = useLocation()
+  const history = useHistory()
+
+  useLayoutEffect(() => {
+    if (localStorage.getItem('last-route')) {
+      history.push(localStorage.getItem('last-route'))
+    }
+  }, [history])
+
+  useLayoutEffect(() => {
+    localStorage.setItem('last-route', pathname)
+    // @ts-ignore
+    return () => localStorage.removeItem('last-route', undefined)
+  }, [pathname])
 
   return (
     <>
