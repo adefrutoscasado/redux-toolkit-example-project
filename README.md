@@ -1,6 +1,4 @@
 
-
-<!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <h3 align="center">Redux Toolkit project example</h3>
@@ -8,11 +6,6 @@
 <br />
 <br />
 
-
-
-
-
-<!-- GETTING STARTED -->
 ## Getting Started
 
 To get a local copy up and running follow these simple steps.
@@ -36,7 +29,6 @@ To get a local copy up and running follow these simple steps.
    npm start
    ```
 
-<!-- USAGE EXAMPLES -->
 ## Examples
 
 ### Login
@@ -54,7 +46,7 @@ To get a local copy up and running follow these simple steps.
 
 - Todo list.
 - Use of `createEntityAdapter()`, its `sortComparer` and its CRUD operations.
-. Use of `prepare()` function.
+- Use of `prepare()` function.
 
 ### Blog
 
