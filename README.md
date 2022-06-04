@@ -3,7 +3,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <h3 align="center">Redux TOolkit project example</h3>
+  <h3 align="center">Redux Toolkit project example</h3>
 </p>
 <br />
 <br />
