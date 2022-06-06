@@ -6,6 +6,7 @@ import {
   EntityState,
 } from '@reduxjs/toolkit'
 import api, { POST_TAG } from '../../app/redux/api/index'
+import { RootState } from '../../app/redux/store'
 
 type Post = {
   id: number,
@@ -32,10 +33,13 @@ const postsApiSlice = api.injectEndpoints({
       },
       // @ts-ignore
       providesTags: (result) => {
-        const tags = result && (Object.keys(result?.entities || [])) ?
+        // REVIEW: What to do if result is undefined?
+        if (!result) return [{ type: POST_TAG, id: 'LIST' }]
+
+        const tags = (result.ids.length > 0) ?
           Object.values(result.ids).map((id) => ({ type: POST_TAG, id }))
           :
-          [{ type: POST_TAG, id: 'LIST' }] // provides various ids. If no id, use the tag 'list'
+          [{ type: POST_TAG, id: 'LIST' }]
         return tags
       }
     }),
@@ -128,11 +132,10 @@ export const {
   selectAll: selectAllPosts,
   selectTotal: selectPostsTotal,
   selectById: selectPostById_,
-  // @ts-ignore
-} = adapter.getSelectors((state) => selectPostsResultData(state) ?? initialState)
+} = adapter.getSelectors((state: RootState) => selectPostsResultData(state) ?? initialState)
 
 // helper to use 'selectById' cleaner
-export const selectPostById = (id: Post['id']) => (state) => selectPostById_(state, id)
+export const selectPostById = (id: Post['id']) => (state: RootState) => selectPostById_(state, id)
 
 export default postsApiSlice
 
