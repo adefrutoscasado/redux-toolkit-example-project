@@ -14,7 +14,6 @@ type Post = {
   description: string,
 }
 
-
 const adapter = createEntityAdapter<Post>({
   // Declare the ID field
   selectId: (post) => post.id, // Unnecessary specification, since default its 'id'
@@ -22,6 +21,7 @@ const adapter = createEntityAdapter<Post>({
   sortComparer: (a, b) => a.id - b.id,  // sort based on id
   // sortComparer: (a, b) => b.id - a.id, // inverse sort based on id
 })
+
 const initialState = adapter.getInitialState()
 
 const postsApiSlice = api.injectEndpoints({
@@ -31,13 +31,11 @@ const postsApiSlice = api.injectEndpoints({
       transformResponse: (responseData: Post[]) => {
         return adapter.setAll(initialState, responseData)
       },
-      // @ts-ignore
       providesTags: (result) => {
-        // REVIEW: What to do if result is undefined?
         if (!result) return [{ type: POST_TAG, id: 'LIST' }]
 
         const tags = (result.ids.length > 0) ?
-          Object.values(result.ids).map((id) => ({ type: POST_TAG, id }))
+          result.ids.map((id) => ({ type: POST_TAG, id }))
           :
           [{ type: POST_TAG, id: 'LIST' }]
         return tags

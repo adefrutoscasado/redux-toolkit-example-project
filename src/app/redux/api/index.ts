@@ -2,7 +2,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { baseQueryWithReauth } from './../utils'
 
-export const POST_TAG = 'Post'
+export const POST_TAG = 'Post' as const
 
 // Define a service using a base URL and expected endpoints
 const api = createApi({
