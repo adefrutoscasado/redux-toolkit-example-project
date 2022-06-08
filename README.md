@@ -55,3 +55,10 @@ To get a local copy up and running follow these simple steps.
 - Use of `createEntityAdapter()`.
 - Tag invalidation.
 - Implementation of normal updates and optimistic updates.
+
+### Pets
+
+- Displays pets of persons.
+- Use of `createApi()`.
+- Use of `createEntityAdapter()`.
+- Get selectors **dinamically** based on the arguments you used in the query of `createApi()`.

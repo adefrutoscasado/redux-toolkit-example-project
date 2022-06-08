@@ -136,5 +136,3 @@ export const {
 export const selectPostById = (id: Post['id']) => (state: RootState) => selectPostById_(state, id)
 
 export default postsApiSlice
-
-export const apiMain = api
