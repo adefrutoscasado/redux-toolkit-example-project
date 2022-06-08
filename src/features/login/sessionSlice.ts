@@ -54,7 +54,7 @@ export const refreshTokenAsyncThunk = createAsyncThunk<loginResponse, refreshTok
   }
 )
 
-const initialState = {
+const emptyInitialState = {
   data: null as null | loginResponse,
   isFetching: false,
   error: null as any,
@@ -62,9 +62,30 @@ const initialState = {
 
 export const logoutAction = createAction<void>('session/logout')
 
+const PERSISTED_SESSION = 'persisted-session'
+
+const loadState = () => {
+  try {
+    const serializedState = localStorage.getItem(PERSISTED_SESSION)
+    if (!serializedState) return emptyInitialState
+    return JSON.parse(serializedState)
+  } catch (error) {
+    return emptyInitialState
+  }
+}
+
+const removePersistedSession = () => {
+  localStorage.removeItem(PERSISTED_SESSION)
+}
+
+const savePersistedSession = (reducerState: typeof emptyInitialState) => {
+  const serializedState = JSON.stringify(reducerState)
+  localStorage.setItem(PERSISTED_SESSION, serializedState)
+}
+
 const sessionSlice = createSlice({
   name: 'session',
-  initialState,
+  initialState: loadState(),
   reducers: {
     // We could specify logoutAction reducer here, but using extraReducer we could reuse the logic for various actions (more scalability)
     // logoutAction: (state) => {
@@ -73,7 +94,8 @@ const sessionSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(logoutAction, (state, action) => {
-        return initialState
+        removePersistedSession()
+        return emptyInitialState
       })
       // isFetching is associated to login, no refresh. Refreshing token is transparent to the user and doesnt need to be rendered
       .addMatcher(isPending(loginAsyncThunk), (state) => {
@@ -92,12 +114,14 @@ const sessionSlice = createSlice({
         state.data = action.payload
         state.isFetching = false
         state.error = null
+        savePersistedSession(state)
       })
       // Similar to use isAnyOf(loginAsyncThunk.rejected, refreshTokenAsyncThunk.rejected)
       .addMatcher(isAnyOf(isRejected(loginAsyncThunk), isRejected(refreshTokenAsyncThunk)), (state, action) => {
         state.data = null
         state.isFetching = false
         state.error = action.error
+        removePersistedSession()
       })
       .addMatcher(
         isAsyncThunkAction(loginAsyncThunk, refreshTokenAsyncThunk),
