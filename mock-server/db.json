@@ -10,5 +10,37 @@
       "description": "description 2",
       "id": 2
     }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "Good guy"
+    },
+    {
+      "id": 2,
+      "name": "Bad guy"
+    }
+  ],
+  "pets": [
+    {
+      "id": 1,
+      "type": "cat",
+      "personId": 1
+    },
+    {
+      "id": 2,
+      "type": "dog",
+      "personId": 1
+    },
+    {
+      "id": 3,
+      "type": "fish",
+      "personId": 2
+    },
+    {
+      "id": 4,
+      "type": "bird",
+      "personId": 2
+    }
   ]
 }

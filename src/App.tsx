@@ -3,6 +3,7 @@ import Counter from './features/counter'
 import Login from './features/login'
 import Blog from './features/blog'
 import Todo from './features/todo'
+import Pets from './features/pets'
 import {
   BrowserRouter as Router,
   Switch,
@@ -54,6 +55,7 @@ const Main = () => {
           <NavLink to={ROUTES.COUNTER}>Counter</NavLink>
           <NavLink to={ROUTES.TODO}>Todo</NavLink>
           <NavLink to={ROUTES.BLOG}>Blog</NavLink>
+          <NavLink to={ROUTES.PETS}>Pets</NavLink>
         </Nav>
         <Nav
           variant='tabs'
@@ -73,6 +75,9 @@ const Main = () => {
           </Route>
           <Route path={ROUTES.TODO}>
             <Todo />
+          </Route>
+          <Route path={ROUTES.PETS}>
+            <Pets />
           </Route>
         </>
       </Switch>
