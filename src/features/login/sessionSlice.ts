@@ -6,12 +6,14 @@ import {
   isRejected,
   isFulfilled,
   createAction,
-  isAnyOf
+  isAnyOf,
+  createListenerMiddleware,
 } from '@reduxjs/toolkit'
 import axios from 'axios'
 import type { AxiosError } from 'axios'
 import * as ROUTES from '../../app/redux/api/routes'
 import type { RootState } from '../../app/redux/store'
+import api from './../../app/redux/api'
 
 type loginResponse = {
   access_token: string,
@@ -87,15 +89,6 @@ const loadState = () => {
   }
 }
 
-const removePersistedSession = () => {
-  localStorage.removeItem(PERSISTED_SESSION)
-}
-
-const savePersistedSession = (reducerState: typeof emptyInitialState) => {
-  const serializedState = JSON.stringify(reducerState)
-  localStorage.setItem(PERSISTED_SESSION, serializedState)
-}
-
 const sessionSlice = createSlice({
   name: 'session',
   initialState: loadState(),
@@ -107,7 +100,6 @@ const sessionSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(logoutAction, (state, action) => {
-        removePersistedSession()
         return emptyInitialState
       })
       // isFetching is associated to login, no refresh. Refreshing token is transparent to the user and doesnt need to be rendered
@@ -127,14 +119,12 @@ const sessionSlice = createSlice({
         state.data = action.payload
         state.isFetching = false
         state.error = null
-        savePersistedSession(state)
       })
       // Similar to use isAnyOf(loginAsyncThunk.rejected, refreshTokenAsyncThunk.rejected)
       .addMatcher(isAnyOf(isRejected(loginAsyncThunk), isRejected(refreshTokenAsyncThunk)), (state, action) => {
         state.data = null
         state.isFetching = false
         state.error = action.error
-        removePersistedSession()
       })
       .addMatcher(
         isAsyncThunkAction(loginAsyncThunk, refreshTokenAsyncThunk),
@@ -166,11 +156,43 @@ const sessionSlice = createSlice({
   // }
 })
 
+
+const removePersistedSession = () => {
+  localStorage.removeItem(PERSISTED_SESSION)
+}
+
+const savePersistedSession = (reducerState: typeof emptyInitialState) => {
+  const serializedState = JSON.stringify(reducerState)
+  localStorage.setItem(PERSISTED_SESSION, serializedState)
+}
+
+const sessionListenerMiddleware = createListenerMiddleware()
+
+sessionListenerMiddleware.startListening({
+  matcher: isAnyOf(logoutAction, isAsyncThunkAction(loginAsyncThunk, refreshTokenAsyncThunk)),
+  effect: async (action, listenerApi) => {
+    const getState = listenerApi.getState as () => RootState
+
+    const shouldSaveSession = isFulfilled(loginAsyncThunk, refreshTokenAsyncThunk)
+    const shouldRemoveSession = isAnyOf(isRejected(loginAsyncThunk, refreshTokenAsyncThunk), logoutAction)
+
+    if (shouldSaveSession(action)) {
+      savePersistedSession(getState().session)
+    }
+    if (shouldRemoveSession(action)) {
+      removePersistedSession()
+      // clean api cache
+      listenerApi.dispatch(api.util.resetApiState())
+    }
+  },
+})
+
+export const sessionMiddleware = sessionListenerMiddleware.middleware
+
 const {
   actions,
   reducer
 } = sessionSlice
-
 
 export const selectSession = (state: RootState) => state.session
 

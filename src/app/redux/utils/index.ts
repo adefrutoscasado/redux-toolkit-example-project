@@ -50,8 +50,6 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
         api.dispatch(logoutAction())
       }
       finally {
-        // Clean redux toolkit api cache on logout
-        api.dispatch(apiSlice.util.resetApiState())
         // release must be called once the mutex should be released again.
         release()
       }
