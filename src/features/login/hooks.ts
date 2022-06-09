@@ -17,13 +17,11 @@ export const useUserReducer = () => {
 
   const isLoggedIn = !!session
 
-  const logout = () => {
+  const logout = () =>
     dispatch(logoutAction())
-    // Clean redux toolkit api cache on logout
-    dispatch(apiSlice.util.resetApiState())
-  }
 
-  const login = ({ username, password }) => dispatch(loginAsyncThunk({ username, password }))
+  const login = ({ username, password }) =>
+    dispatch(loginAsyncThunk({ username, password }))
 
   const isAdmin = user?.role === 'admin'
   const isUser = user?.role === 'user'
