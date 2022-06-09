@@ -1,6 +1,7 @@
 
 import { logoutAction, loginAsyncThunk, selectSession } from './sessionSlice'
 import { useAppDispatch, useAppSelector } from './../../app/hooks'
+import apiSlice from './../../app/redux/api'
 
 export const useUserReducer = () => {
   const dispatch = useAppDispatch()
@@ -16,7 +17,11 @@ export const useUserReducer = () => {
 
   const isLoggedIn = !!session
 
-  const logout = () => dispatch(logoutAction())
+  const logout = () => {
+    dispatch(logoutAction())
+    // Clean redux toolkit api cache on logout
+    dispatch(apiSlice.util.resetApiState())
+  }
 
   const login = ({ username, password }) => dispatch(loginAsyncThunk({ username, password }))
 

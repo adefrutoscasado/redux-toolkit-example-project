@@ -1,6 +1,8 @@
 import * as ROUTES from './../api/routes'
-import { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import type { RootState } from '../store'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query'
+import apiSlice from './../../redux/api'
 import { logoutAction, refreshTokenAsyncThunk } from '../../../features/login/sessionSlice'
 import { Mutex } from 'async-mutex'
 // create a new mutex
@@ -8,8 +10,8 @@ const mutex = new Mutex()
 
 const baseQuery = fetchBaseQuery({
   baseUrl: ROUTES.API_HOST,
-  prepareHeaders: (headers, { getState }) => {
-    // @ts-ignore
+  prepareHeaders: (headers, api) => {
+    const getState = api.getState as () => RootState
     const accessToken = getState().session?.data?.access_token
     if (accessToken) {
       headers.set('Authorization', `Bearer ${accessToken}`)
@@ -23,6 +25,7 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
   api,
   extraOptions
 ) => {
+  const getState = api.getState as () => RootState
   // wait until the mutex is available without locking it
   await mutex.waitForUnlock()
 
@@ -33,16 +36,22 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
     if (!mutex.isLocked()) {
       const release = await mutex.acquire()
       try {
-        // @ts-ignore: TODO: Type of api.getState()
-        await api.dispatch(refreshTokenAsyncThunk({ refresh_token: api.getState().session?.data?.refresh_token })).unwrap()
-        // Since we use 'unwrap', if 'refreshTokenAsyncThunk' doesnt throw an error, means we hace refreshed the token correctly.
-        // So we can repeat the original request again
-        result = await baseQuery(args, api, extraOptions)
+        const refresh_token = getState().session?.data?.refresh_token
+        if (refresh_token) {
+          await api.dispatch(refreshTokenAsyncThunk({ refresh_token }))
+          result = await baseQuery(args, api, extraOptions)
+        }
+        else {
+          throw new Error('Refresh token not found')
+        }
       }
-      catch (err) {
-        console.log('Refresh token is expired too')
+      catch {
+        // If refresh token not found logout
+        api.dispatch(logoutAction())
       }
       finally {
+        // Clean redux toolkit api cache on logout
+        api.dispatch(apiSlice.util.resetApiState())
         // release must be called once the mutex should be released again.
         release()
       }

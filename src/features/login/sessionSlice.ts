@@ -9,6 +9,7 @@ import {
   isAnyOf
 } from '@reduxjs/toolkit'
 import axios from 'axios'
+import type { AxiosError } from 'axios'
 import * as ROUTES from '../../app/redux/api/routes'
 import type { RootState } from '../../app/redux/store'
 
@@ -30,13 +31,19 @@ type loginArgs = {
 
 export const loginAsyncThunk = createAsyncThunk<loginResponse, loginArgs>(
   'session/login',
-  async ({ username, password }) => {
-    const response = await axios.post(
+  ({ username, password }) => new Promise((resolve, reject) => {
+    axios.post(
       ROUTES.LOGIN(),
       { username, password }
     )
-    return response.data
-  }
+      .then((response) => resolve(response.data))
+      .catch((error: AxiosError | typeof Error) => {
+        if (axios.isAxiosError(error)) {
+          reject(error.response?.data)
+        }
+        reject(error)
+      })
+  })
 )
 
 type refreshTokenArgs = {
@@ -45,13 +52,19 @@ type refreshTokenArgs = {
 
 export const refreshTokenAsyncThunk = createAsyncThunk<loginResponse, refreshTokenArgs>(
   'session/refresh',
-  async ({ refresh_token }) => {
-    const response = await axios.post(
+  async ({ refresh_token }) => new Promise((resolve, reject) => {
+    axios.post(
       ROUTES.REFRESH(),
       { refresh_token }
     )
-    return response.data
-  }
+      .then((response) => resolve(response.data))
+      .catch((error: AxiosError | typeof Error) => {
+        if (axios.isAxiosError(error)) {
+          reject(error.response?.data)
+        }
+        reject(error)
+      })
+  })
 )
 
 const emptyInitialState = {
