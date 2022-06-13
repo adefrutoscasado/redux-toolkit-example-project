@@ -31,7 +31,6 @@ server.on('listening', onListening)
  * Normalize a port into a number, string, or false.
  */
 
-// @ts-ignore
 function normalizePort(val) {
   const port = parseInt(val, 10)
 
@@ -52,7 +51,6 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-// @ts-ignore
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error
@@ -85,7 +83,6 @@ function onListening() {
   const addr = server.address()
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
-    // @ts-ignore
     : 'port ' + addr.port
   console.log('Listening on ' + bind)
 }

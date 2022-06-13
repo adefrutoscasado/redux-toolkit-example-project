@@ -177,6 +177,7 @@ sessionListenerMiddleware.startListening({
     const shouldRemoveSession = isAnyOf(isRejected(loginAsyncThunk, refreshTokenAsyncThunk), logoutAction)
 
     if (shouldSaveSession(action)) {
+      // Middleware is executed after reducer, so we can assume state is already updated
       savePersistedSession(getState().session)
     }
     if (shouldRemoveSession(action)) {

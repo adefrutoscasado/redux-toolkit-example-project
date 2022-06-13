@@ -1,7 +1,6 @@
 
 import { logoutAction, loginAsyncThunk, selectSession } from './sessionSlice'
 import { useAppDispatch, useAppSelector } from './../../app/hooks'
-import apiSlice from './../../app/redux/api'
 
 export const useUserReducer = () => {
   const dispatch = useAppDispatch()

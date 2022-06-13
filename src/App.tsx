@@ -40,8 +40,7 @@ const Main = () => {
 
   useLayoutEffect(() => {
     localStorage.setItem('last-route', pathname)
-    // @ts-ignore
-    return () => localStorage.removeItem('last-route', undefined)
+    return () => localStorage.removeItem('last-route')
   }, [pathname])
 
   return (

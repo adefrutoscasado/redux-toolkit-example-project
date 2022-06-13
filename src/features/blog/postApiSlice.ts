@@ -71,12 +71,12 @@ const postsApiSlice = api.injectEndpoints({
       }),
       // WARNING: onQueryStarted function requires hard reload to apply in browser
       async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
-        // @ts-ignore Update the data of getPost request manually
-        const manualGetPostUpdate = dispatch(api.util.updateQueryData('getPost', id, (draft) => {
+        // Update the data of getPost request manually
+        const manualGetPostUpdate = dispatch(postsApiSlice.util.updateQueryData('getPost', id, (draft) => {
           Object.assign(draft, patch)
         }))
-        // @ts-ignore Update the data of getPosts request manually
-        const manualGetsPostUpdate = dispatch(api.util.updateQueryData('getPosts', undefined, (draft) => {
+        // Update the data of getPosts request manually
+        const manualGetsPostUpdate = dispatch(postsApiSlice.util.updateQueryData('getPosts', undefined, (draft) => {
           // @ts-ignore: REVIEW: Any way to use adapter.updateOne() function?
           Object.assign(draft.entities[id], patch)
         }))

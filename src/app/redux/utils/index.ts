@@ -2,7 +2,6 @@ import * as ROUTES from './../api/routes'
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import type { RootState } from '../store'
 import { fetchBaseQuery } from '@reduxjs/toolkit/query'
-import apiSlice from './../../redux/api'
 import { logoutAction, refreshTokenAsyncThunk } from '../../../features/login/sessionSlice'
 import { Mutex } from 'async-mutex'
 // create a new mutex
